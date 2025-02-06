@@ -8,4 +8,19 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  build: {
+    chunkSizeWarningLimit: 1000, // Limite à 1 Mo au lieu de 500 Ko
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor'; // Mettre tout ce qui vient de node_modules dans un chunk séparé
+          }
+        }
+      }
+    }
+  },
+  define: {
+    'process.env': process.env
+  } 
 })
