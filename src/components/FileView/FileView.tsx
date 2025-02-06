@@ -2,8 +2,7 @@
 
 import { Divider, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { fetchFileData } from "../../services/fileService";
+// import { fetchFileData } from "../../services/fileService";
 import { IoWarning } from "react-icons/io5";
 
 interface FileType {
@@ -23,7 +22,6 @@ interface FileViewProps {
 }
 
 const FileView: React.FC<FileViewProps> = ({ selectedFile }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [loading, setLoading] = useState<boolean>(false);
     const [fileData, setData] = useState<FileType | null>(null);
     
@@ -81,6 +79,7 @@ const FileView: React.FC<FileViewProps> = ({ selectedFile }) => {
     useEffect(() => {
         if (selectedFile !== null) {
             const loadData = async () => {
+                setLoading(true);
                 try {
                     // const response = await fetchFileData(selectedFile.name); 
                     const falseData = {
@@ -124,13 +123,14 @@ const FileView: React.FC<FileViewProps> = ({ selectedFile }) => {
                         }
                     };
                     setData(falseData);
+                    setLoading(false);
                 } catch (error) {
                     console.error("Erreur lors du chargement des données :", error);
                 }
             };
             loadData();
         }
-    }, []);
+    }, [selectedFile]);
 
     return (
         <div className="min-h-full overflow-y-auto flex-1">
