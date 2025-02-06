@@ -1,6 +1,7 @@
 // import React from 'react';
 
-import { Divider, Spin, Table } from "antd";
+import { Button, Divider, Spin, Table } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 // import { fetchFileData } from "../../services/fileService";
 import { IoWarning } from "react-icons/io5";
@@ -19,9 +20,10 @@ interface FileType {
 }
 interface FileViewProps {
     selectedFile: { name: string; } | null;
+    closeView: () => void;
 }
 
-const FileView: React.FC<FileViewProps> = ({ selectedFile }) => {
+const FileView: React.FC<FileViewProps> = ({ selectedFile, closeView }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [fileData, setData] = useState<FileType | null>(null);
     
@@ -137,10 +139,19 @@ const FileView: React.FC<FileViewProps> = ({ selectedFile }) => {
             {(!loading && selectedFile) ?
             <div className="h-full flex flex-col gap-2">
                 {/* Title */}
-                <div className="flex flex-col gap-4 px-8 pt-6 pb-4">
-                    <span className="text-3xl">Analyse de {selectedFile.name}</span>
-                    <span className="text-md">Compte rendu de l'analyse de {selectedFile.name}.csv</span>
+                <div className="flex flex-row justify-between items-start px-8 pt-6 pb-4">
+                    <div className="flex flex-col gap-4">
+                        <span className="text-3xl">Analyse de {selectedFile.name}</span>
+                        <span className="text-md">Compte rendu de l'analyse de {selectedFile.name}.csv</span>
+                    </div>
+                    <Button 
+                        shape="circle" 
+                        icon={<CloseOutlined className="text-lg" />} 
+                        onClick={()=>closeView()}
+                        className="border-gray-400 hover:border-gray-600 hover:text-red-500"
+                    />
                 </div>
+                
                 <Divider/>
                 <span className="text-2xl py-2 px-8">📊 Statistiques générales</span>
                 {/* Price statistics */}

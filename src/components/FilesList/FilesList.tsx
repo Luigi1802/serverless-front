@@ -1,6 +1,6 @@
 import { Button, Table, TableColumnsType, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { fetchFiles } from '../../services/fileService';
+import { deleteFile, fetchFiles } from '../../services/fileService';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { MdOutlineOpenInNew } from 'react-icons/md';
 import { LuFileChartColumn } from 'react-icons/lu';
@@ -48,9 +48,17 @@ const FilesList: React.FC<FilesListProps> = ({ setFileView }) => {
         loadData();
       }, []);
     
+    const handleDelete = async (name: string) => {
+        try {
+            await deleteFile(name); 
+            // TODO reload page
+        } catch (error) {
+            console.error("Erreur lors du chargement des données :", error);
+        }
+    }
+    
     const handleRowClick = (record: DataType): void => {
         setFileView(record); 
-        console.log("Fichier affiché : ", record.name);
     }
 
     const columns: TableColumnsType<DataType> = [
@@ -74,7 +82,7 @@ const FilesList: React.FC<FilesListProps> = ({ setFileView }) => {
                             type="default"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                handleRowClick(record);
+                                    handleRowClick(record);
                                 }
                             }
                             variant="filled" 
@@ -85,6 +93,7 @@ const FilesList: React.FC<FilesListProps> = ({ setFileView }) => {
                     <Tooltip title="Supprimer">
                         <Button 
                             danger 
+                            onClick={()=>handleDelete(record.name)}
                             type="primary" 
                             size="large" 
                             icon={<FaRegTrashAlt className="text-lg" />} 
