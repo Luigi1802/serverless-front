@@ -1,4 +1,4 @@
-import { Button, Table, TableColumnsType, Tooltip } from 'antd';
+import { Button, Spin, Table, TableColumnsType, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { deleteFile, fetchFiles } from '../../services/fileService';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -8,50 +8,41 @@ import { LuFileChartColumn } from 'react-icons/lu';
 interface DataType {
     key: React.Key;
     name: string;
-  }
-  
-const defaultData: DataType[] = [
-    {
-        key: '1',
-        name: 'export12022017',
-    },
-    {
-        key: '2',
-        name: 'testcsv'
-    },
-    {
-        key: '3',
-        name: 'donneesclient'
-    },
-    {
-        key: '4',
-        name: 'produits'
-    }
-];
+}
 
 interface FilesListProps {
     setFileView: (file: DataType) => void;
 }
 
 const FilesList: React.FC<FilesListProps> = ({ setFileView }) => {
-    const [data, setData] = useState(defaultData);
+    const [data, setData] = useState<DataType[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const loadData = async () => {
+        setLoading(true);
+        try {
+          const response = await fetchFiles();
+          const filenames = response.map((filename: string, index: number)=>{
+              return {
+                  key: index,
+                  name: filename
+              }
+          })
+          setData(filenames);
+          setLoading(false);
+        } catch (error) {
+          console.error("Erreur lors du chargement des données :", error);
+        }
+      };
 
     useEffect(() => {
-        const loadData = async () => {
-          try {
-            const response = await fetchFiles(); 
-            setData(response);
-          } catch (error) {
-            console.error("Erreur lors du chargement des données :", error);
-          }
-        };
         loadData();
       }, []);
     
     const handleDelete = async (name: string) => {
         try {
             await deleteFile(name); 
-            // TODO reload page
+            loadData();
         } catch (error) {
             console.error("Erreur lors du chargement des données :", error);
         }
@@ -105,14 +96,13 @@ const FilesList: React.FC<FilesListProps> = ({ setFileView }) => {
 
     return (
         <div className="p-6">
-            <Table<DataType>
-                columns={columns}
-                dataSource={data}
-                // onRow={(record) => ({
-                //     onClick: () => {handleRowClick(record);}, 
-                // })}
-                className="overflow-hidden border-2 border-gray-200 rounded-lg"
-            />
+            {loading ? <Spin fullscreen className="scale-150" size="large"/> :
+                <Table<DataType>
+                    columns={columns}
+                    dataSource={data}
+                    className="overflow-hidden border-2 border-gray-200 rounded-lg"
+                />
+            }
         </div>
     );
 };

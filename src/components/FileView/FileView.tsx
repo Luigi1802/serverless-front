@@ -1,10 +1,8 @@
-// import React from 'react';
-
 import { Button, Divider, Spin, Table } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-// import { fetchFileData } from "../../services/fileService";
 import { IoWarning } from "react-icons/io5";
+import { fetchFileData } from "../../services/fileService";
 
 interface FileType {
     "statistiques": { 
@@ -24,7 +22,7 @@ interface FileViewProps {
 }
 
 const FileView: React.FC<FileViewProps> = ({ selectedFile, closeView }) => {
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const [fileData, setData] = useState<FileType | null>(null);
     
     const formatAnomaliesData = (lines: string[]) => {
@@ -83,48 +81,8 @@ const FileView: React.FC<FileViewProps> = ({ selectedFile, closeView }) => {
             const loadData = async () => {
                 setLoading(true);
                 try {
-                    // const response = await fetchFileData(selectedFile.name); 
-                    const falseData = {
-                        "statistiques": {
-                            "prix": {
-                                "mediane": 241.39,
-                                "moyenne": 238.9789898989899,
-                                "ecart-type": 149.6050691701931
-                            },
-                            "note_client": {
-                                "mediane": 3.3,
-                                "moyenne": 3.218181818181818,
-                                "ecart-type": 1.3816112773522313
-                            },
-                            "quantite": {
-                                "mediane": 28.0,
-                                "moyenne": 75.68686868686869,
-                                "ecart-type": 500.18073562982903
-                            }
-                        },
-                        "anomalies": {
-                            "prix": {
-                                "anomalies_count": 1.0,
-                                "lignes_anomalies": [
-                                    "6;Produit_6;-100.0;30;3.8"
-                                ]
-                            },
-                            "note_client": {
-                                "anomalies_count": 2.0,
-                                "lignes_anomalies": [
-                                    "16;Produit_16;99.87;32;10.0",
-                                    "100;Produit_100;62.87;36;6.0"
-                                ]
-                            },
-                            "quantite": {
-                                "anomalies_count": 1.0,
-                                "lignes_anomalies": [
-                                    "11;Produit_11;20.09;5000;1.5"
-                                ]
-                            }
-                        }
-                    };
-                    setData(falseData);
+                    const response = await fetchFileData(selectedFile.name.replace(".csv", ".json")); 
+                    setData(response);
                     setLoading(false);
                 } catch (error) {
                     console.error("Erreur lors du chargement des données :", error);
@@ -142,7 +100,7 @@ const FileView: React.FC<FileViewProps> = ({ selectedFile, closeView }) => {
                 <div className="flex flex-row justify-between items-start px-8 pt-6 pb-4">
                     <div className="flex flex-col gap-4">
                         <span className="text-3xl">Analyse de {selectedFile.name}</span>
-                        <span className="text-md">Compte rendu de l'analyse de {selectedFile.name}.csv</span>
+                        <span className="text-md">Compte rendu de l'analyse des données de {selectedFile.name}.csv</span>
                     </div>
                     <Button 
                         shape="circle" 
@@ -229,7 +187,7 @@ const FileView: React.FC<FileViewProps> = ({ selectedFile, closeView }) => {
                 </div>
             </div>
              :
-            <div className="flex h-full justify-center items-center">
+            <div className="flex min-h-[80vh] justify-center items-center">
                 <Spin className="scale-150" size="large"/>
             </div>
             }

@@ -1,15 +1,15 @@
-// import React from 'react';
 import './App.css';
 import { Header } from 'antd/es/layout/layout';
 import FilesList from '../FilesList/FilesList';
 import FileView from '../FileView/FileView';
 import { useState } from 'react';
-import { MdOutlineOpenInNew } from 'react-icons/md';
+import { MdOutlineOpenInNew, MdQueryStats } from 'react-icons/md';
 import { AiFillThunderbolt } from 'react-icons/ai';
-import { Button, Input, message, Modal } from 'antd';
+import { Button, Input, Modal } from 'antd';
 import { FiFilePlus } from 'react-icons/fi';
-import Upload, { RcFile } from 'antd/es/upload';
 import { addFile } from '../../services/fileService';
+import { LuFileCheck2 } from 'react-icons/lu';
+import { IoMdOpen } from 'react-icons/io';
 interface DataType {
     key: React.Key;
     name: string;
@@ -19,38 +19,41 @@ const App = () => {
   const [selectedFile, setFileView] = useState<DataType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filename, setFilename] = useState("");
-  const [fileList, setFileList] = useState<RcFile[]>([]); // File state
+  const [file, setFile] = useState<File | null>(null);
 
-  const handleOk = async () => {
-    if (fileList.length === 0) {
-      message.error("Veuillez sélectionner un fichier");
-      return;
-    } 
-    try {
-      // Appel au service pour télécharger le fichier
-      await addFile(fileList[0], filename);
-
-      // Réinitialisation des états après un envoi réussi
-      setIsModalOpen(false); // Ferme le modal après envoi
-      setFilename(""); // Réinitialise le nom du fichier
-      setFileList([]); // Réinitialise la liste de fichiers
-      // TODO refresh la page
-    } catch (error) {
-      console.error("Erreur dans le téléchargement", error);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      setFilename(file.name.replace(".csv", ""));
+      setFile(file);
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleFileChange = (info: any) => {
-    if (info.fileList.length > 0) {
-      const filenameWithoutExt = info.fileList[0].name.replace(/\.[^/.]+$/, "");
-      setFilename(filenameWithoutExt); // Met à jour le nom du fichier
+  const renameFile = (originalFile: File, newName: string) => {
+    return new File([originalFile], newName, { type: originalFile.type, lastModified: originalFile.lastModified });
+  };
+
+
+  const handleOk = async () => {
+    if (!file) {
+      return;
     }
-    setFileList(info.fileList);
+
+    // Renommer le fichier
+    const renamedFile = renameFile(file, `${filename}.csv`);
+
+    try {
+      await addFile(renamedFile);
+      window.location.reload();
+    } catch (error) {
+      console.error("Erreur lors de l'envoi", error);
+    }
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setFile(null);
+    setFilename("");
   };
 
   return (
@@ -76,28 +79,42 @@ const App = () => {
         <Modal 
           title="Ajouter un fichier .csv" 
           cancelText="Annuler"
-          okText="Envoyer le fichier"
+          okButtonProps={{ disabled: file === null }}
+          okText="Importer le fichier"
           open={isModalOpen} 
           onOk={handleOk} 
           onCancel={handleCancel}
         >
-          <div className="flex flex-col pt-4">
-            <span className="text-gray-700 text-[12px] mb-2">Choisissez un nom pour le fichier (optionnel)</span>
-            <Input placeholder="Nom du fichier" value={filename} onChange={(e) => setFilename(e.target.value)}/>
-          </div>
-          <div className="my-6">
-            <Upload
-              maxCount={1}
-              listType="text"
+          <div className="flex flex-row gap-4 items-center mt-8 mb-6">
+            {/* Input file caché */}
+            <input
+              type="file"
+              accept=".csv"
+              id="fileInput"
+              className="hidden"
               onChange={handleFileChange}
-              beforeUpload={() => false} // Empêche l'upload automatique
-              fileList={fileList}
+            />
+
+            {/* Label stylisé qui agit comme un bouton */}
+            <label
+              htmlFor="fileInput"
+              className="flex flex-row items-center gap-2 cursor-pointer bg-gray-100 text-gray-700 px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-200 transition"
             >
-              <Button icon={<FiFilePlus />} style={{ width: '100%' }}>
-                Sélectionner un fichier
-              </Button>
-            </Upload>
+              <IoMdOpen />
+              Sélectionner un fichier
+            </label>
+
+            {/* Affichage du nom du fichier sélectionné */}
+            {file && <p className="flex flex-row items-center gap-2 text-gray-500 text-sm"><LuFileCheck2 /> {file.name}</p>}
+
           </div>
+          {
+            file &&
+            <div className="flex flex-col py-4">
+              <span className="text-gray-700 text-[12px] mb-2">Choisissez un nom pour le fichier (optionnel)</span>
+              <Input placeholder="Nom du fichier" value={filename} onChange={(e) => setFilename(e.target.value)}/>
+            </div>
+          }
         </Modal>
       </Header>
       {/* Content */}
@@ -114,13 +131,13 @@ const App = () => {
           </div>
         </section>
         {/* File analysis section */}
-        {selectedFile && // ? 
+        {selectedFile  ? 
           <section className="bg-gray-100 h-full w-[60%] overflow-y-auto flex-1">
             <FileView selectedFile={selectedFile} closeView={()=>{setFileView(null)}}/>
-          </section> // :
-          // <div className="flex h-full w-[50%] justify-center items-center"> 
-          //   <img src="../../../public/illustration.jpg" className="h-[500px]" />
-          // </div>
+          </section>  :
+          <div className="flex h-full w-[50%] justify-center items-center"> 
+            <MdQueryStats className="text-[300px] text-[#1257a6] opacity-20" />
+          </div>
         }
       </div>
       {/* Floating upload button */}
