@@ -2,6 +2,7 @@
 
 import { Divider, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchFileData } from "../../services/fileService";
 import { IoWarning } from "react-icons/io5";
 
@@ -22,6 +23,7 @@ interface FileViewProps {
 }
 
 const FileView: React.FC<FileViewProps> = ({ selectedFile }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [loading, setLoading] = useState<boolean>(false);
     const [fileData, setData] = useState<FileType | null>(null);
     
