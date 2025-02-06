@@ -5,7 +5,9 @@ import FilesList from '../FilesList/FilesList';
 
 const App = () => {
   console.log(import.meta.env.VITE_API_BASE_URL);
+  console.log(process.env.VITE_API_BASE_URL);
   
+
   return (
     <div className="h-screen w-screen flex flex-col">
       {/* Header */}
