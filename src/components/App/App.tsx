@@ -54,6 +54,11 @@ const App = () => {
     setIsModalOpen(false);
     setFile(null);
     setFilename("");
+    // Réinitialiser la valeur du champ input file
+    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = ""; // Vide la valeur de l'input
+    }
   };
 
   return (

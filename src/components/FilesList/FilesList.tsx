@@ -11,7 +11,7 @@ interface DataType {
 }
 
 interface FilesListProps {
-    setFileView: (file: DataType) => void;
+    setFileView: (file: DataType | null) => void;
 }
 
 const FilesList: React.FC<FilesListProps> = ({ setFileView }) => {
@@ -41,6 +41,7 @@ const FilesList: React.FC<FilesListProps> = ({ setFileView }) => {
     
     const handleDelete = async (name: string) => {
         try {
+            setFileView(null);
             await deleteFile(name); 
             loadData();
         } catch (error) {
@@ -101,8 +102,8 @@ const FilesList: React.FC<FilesListProps> = ({ setFileView }) => {
                     locale={{ emptyText: 'Aucun fichier' }}
                     columns={columns}
                     dataSource={data}
-                    pagination={{ pageSize: 5, showSizeChanger: false }}
-                    className="overflow-hidden border-2 border-gray-200 rounded-lg"
+                    pagination={false}
+                    className="overflow-hidden pb-1 bg-white border-2 border-gray-200 rounded-lg"
                 />
             }
         </div>

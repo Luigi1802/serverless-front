@@ -99,8 +99,8 @@ const FileView: React.FC<FileViewProps> = ({ selectedFile, closeView }) => {
                 {/* Title */}
                 <div className="flex flex-row justify-between items-start px-8 pt-6 pb-4">
                     <div className="flex flex-col gap-4">
-                        <span className="text-3xl">Analyse de {selectedFile.name}</span>
-                        <span className="text-md">Compte rendu de l'analyse des données de {selectedFile.name}.csv</span>
+                        <span className="text-3xl">Analyse de {selectedFile.name.replace(".csv", "")}</span>
+                        <span className="text-md">Compte rendu de l'analyse des données de <i>{selectedFile.name}</i></span>
                     </div>
                     <Button 
                         shape="circle" 
@@ -173,7 +173,7 @@ const FileView: React.FC<FileViewProps> = ({ selectedFile, closeView }) => {
                 <span className="text-2xl py-2 px-8">⚠️ Anomalies</span>   
                 <div className="flex flex-col justify-center gap-4 px-8">
                     <div className="flex flex-col justify-center my-2 gap-4">
-                        <span className="text-sky-900 text-md font-bold">Anomalies relatives au prix</span>
+                        <span className="text-sky-900 text-md font-bold">Anomalies relatives aux prix</span>
                         <Table locale={{ emptyText: 'Aucune anomalie' }} pagination={false} dataSource={price_anomalies} columns={anomaly_columns} className="overflow-hidden pb-1 bg-white border-2 border-gray-200 rounded-lg" />
                     </div>
                     <div className="flex flex-col justify-center my-2 gap-4">
