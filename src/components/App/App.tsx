@@ -82,9 +82,10 @@ const App = () => {
         </Button>
         {/* Add file Modal */}
         <Modal 
-          title="Ajouter un fichier .csv" 
+          title={<span className="poppins font-normal text-lg">Ajouter un fichier .csv</span>} 
           cancelText="Annuler"
-          okButtonProps={{ disabled: file === null }}
+          okButtonProps={{ disabled: file === null, className: `poppins ${file && "!bg-[#1257a6]"}` }}
+          cancelButtonProps={{ className: "poppins" }}
           okText="Importer le fichier"
           open={isModalOpen} 
           onOk={handleOk} 
@@ -103,21 +104,21 @@ const App = () => {
             {/* Label stylisé qui agit comme un bouton */}
             <label
               htmlFor="fileInput"
-              className="flex flex-row items-center gap-2 cursor-pointer bg-gray-100 text-gray-700 px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-200 transition"
+              className="flex flex-row poppins items-center gap-2 cursor-pointer bg-gray-100 text-gray-700 px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-200 transition"
             >
               <IoMdOpen />
               Sélectionner un fichier
             </label>
 
             {/* Affichage du nom du fichier sélectionné */}
-            {file && <p className="flex flex-row items-center gap-2 text-gray-500 text-sm"><LuFileCheck2 /> {file.name}</p>}
+            {file && <p className="flex flex-row items-center gap-2 text-gray-500 text-sm poppins"><LuFileCheck2 /> {file.name}</p>}
 
           </div>
           {
             file &&
             <div className="flex flex-col py-4">
-              <span className="text-gray-700 text-[12px] mb-2">Choisissez un nom pour le fichier (optionnel)</span>
-              <Input placeholder="Nom du fichier" value={filename} onChange={(e) => setFilename(e.target.value)}/>
+              <span className="text-gray-700 text-[12px] mb-2 poppins">Choisissez un nom pour le fichier (optionnel)</span>
+              <Input className="poppins" placeholder="Nom du fichier" value={filename} onChange={(e) => setFilename(e.target.value)}/>
             </div>
           }
         </Modal>
@@ -141,7 +142,7 @@ const App = () => {
             <FileView selectedFile={selectedFile} closeView={()=>{setFileView(null)}}/>
           </section>  :
           <div className="flex h-full w-[50%] justify-center items-center"> 
-            <MdQueryStats className="text-[300px] text-[#1257a6] opacity-20" />
+            <MdQueryStats className="text-[300px] text-[#1257a6] opacity-30" />
           </div>
         }
       </div>

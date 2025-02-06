@@ -99,7 +99,7 @@ const FileView: React.FC<FileViewProps> = ({ selectedFile, closeView }) => {
                 {/* Title */}
                 <div className="flex flex-row justify-between items-start px-8 pt-6 pb-4">
                     <div className="flex flex-col gap-4">
-                        <span className="text-3xl">Analyse de {selectedFile.name.replace(".csv", "")}</span>
+                        <span className="text-3xl">Rapport de {selectedFile.name.replace(".csv", "")}</span>
                         <span className="text-md">Compte rendu de l'analyse des données de <i>{selectedFile.name}</i></span>
                     </div>
                     <Button 
