@@ -98,8 +98,10 @@ const FilesList: React.FC<FilesListProps> = ({ setFileView }) => {
         <div className="p-6">
             {loading ? <Spin fullscreen className="scale-150" size="large"/> :
                 <Table<DataType>
+                    locale={{ emptyText: 'Aucun fichier' }}
                     columns={columns}
                     dataSource={data}
+                    pagination={{ pageSize: 5, showSizeChanger: false }}
                     className="overflow-hidden border-2 border-gray-200 rounded-lg"
                 />
             }

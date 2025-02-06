@@ -120,7 +120,7 @@ const App = () => {
       {/* Content */}
       <div className="w-full h-full flex flex-row overflow-hidden">
         {/* Files list section */}
-        <section className={`bg-white h-full ${selectedFile ? 'w-[40%]' : 'w-[50%]'}`}>
+        <section className={`bg-white overflow-y-auto h-full ${selectedFile ? 'w-[40%]' : 'w-[50%]'}`}>
           <div className="flex flex-col gap-4 px-8 pt-6">
             <span className="text-2xl">Liste des fichiers distants</span>
             <span className="text-md flex flex-row gap-2 items-center">Cliquez sur <MdOutlineOpenInNew className="text-md" /> pour afficher l'analyse du fichier.</span>
