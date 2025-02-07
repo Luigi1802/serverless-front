@@ -5,7 +5,7 @@ import FileView from '../FileView/FileView';
 import { useState } from 'react';
 import { MdOutlineOpenInNew, MdQueryStats } from 'react-icons/md';
 import { AiFillThunderbolt } from 'react-icons/ai';
-import { Button, Input, Modal } from 'antd';
+import { Button, Input, Modal, Spin } from 'antd';
 import { FiFilePlus } from 'react-icons/fi';
 import { addFile } from '../../services/fileService';
 import { LuFileCheck2 } from 'react-icons/lu';
@@ -20,6 +20,7 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filename, setFilename] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -44,7 +45,11 @@ const App = () => {
 
     try {
       await addFile(renamedFile);
-      window.location.reload();
+      setLoading(true);
+      setTimeout(()=>{
+        setLoading(false);
+        window.location.reload();
+      }, 3000)
     } catch (error) {
       console.error("Erreur lors de l'envoi", error);
     }
@@ -91,35 +96,40 @@ const App = () => {
           onOk={handleOk} 
           onCancel={handleCancel}
         >
-          <div className="flex flex-row gap-4 items-center mt-8 mb-6">
-            {/* Input file caché */}
-            <input
-              type="file"
-              accept=".csv"
-              id="fileInput"
-              className="hidden"
-              onChange={handleFileChange}
-            />
+          { !loading ?
+            <>
+            <div className="flex flex-row gap-4 items-center mt-8 mb-6">
+              {/* Input file caché */}
+              <input
+                type="file"
+                accept=".csv"
+                id="fileInput"
+                className="hidden"
+                onChange={handleFileChange}
+              />
 
-            {/* Label stylisé qui agit comme un bouton */}
-            <label
-              htmlFor="fileInput"
-              className="flex flex-row poppins items-center gap-2 cursor-pointer bg-gray-100 text-gray-700 px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-200 transition"
-            >
-              <IoMdOpen />
-              Sélectionner un fichier
-            </label>
+              {/* Label stylisé qui agit comme un bouton */}
+              <label
+                htmlFor="fileInput"
+                className="flex flex-row poppins items-center gap-2 cursor-pointer bg-gray-100 text-gray-700 px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-200 transition"
+              >
+                <IoMdOpen />
+                Sélectionner un fichier
+              </label>
 
-            {/* Affichage du nom du fichier sélectionné */}
-            {file && <p className="flex flex-row items-center gap-2 text-gray-500 text-sm poppins"><LuFileCheck2 /> {file.name}</p>}
+              {/* Affichage du nom du fichier sélectionné */}
+              {file && <p className="flex flex-row items-center gap-2 text-gray-500 text-sm poppins"><LuFileCheck2 /> {file.name}</p>}
 
-          </div>
-          {
-            file &&
-            <div className="flex flex-col py-4">
-              <span className="text-gray-700 text-[12px] mb-2 poppins">Choisissez un nom pour le fichier (optionnel)</span>
-              <Input className="poppins" placeholder="Nom du fichier" value={filename} onChange={(e) => setFilename(e.target.value)}/>
             </div>
+            {
+              file &&
+              <div className="flex flex-col py-4">
+                <span className="text-gray-700 text-[12px] mb-2 poppins">Choisissez un nom pour le fichier (optionnel)</span>
+                <Input className="poppins" placeholder="Nom du fichier" value={filename} onChange={(e) => setFilename(e.target.value)}/>
+              </div>
+            }
+            </> :
+            <div className="flex h-[300px] justify-center items-center"><Spin size="large"/></div>
           }
         </Modal>
       </Header>
