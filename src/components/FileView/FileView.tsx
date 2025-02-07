@@ -173,15 +173,15 @@ const FileView: React.FC<FileViewProps> = ({ selectedFile, closeView }) => {
                 <span className="text-2xl py-2 px-8">⚠️ Anomalies</span>   
                 <div className="flex flex-col justify-center gap-4 px-8">
                     <div className="flex flex-col justify-center my-2 gap-4">
-                        <span className="text-sky-900 text-md font-bold">Anomalies relatives aux prix</span>
+                        <span className="text-sky-900 text-md font-bold">Anomalies relatives aux prix ({fileData ? fileData.anomalies.prix.anomalies_count : 0})</span>
                         <Table locale={{ emptyText: 'Aucune anomalie' }} pagination={false} dataSource={price_anomalies} columns={anomaly_columns} className="overflow-hidden pb-1 bg-white border-2 border-gray-200 rounded-lg" />
                     </div>
                     <div className="flex flex-col justify-center my-2 gap-4">
-                        <span className="text-sky-900 text-md font-bold">Anomalies relatives aux notes client</span>
+                        <span className="text-sky-900 text-md font-bold">Anomalies relatives aux notes client ({fileData ? fileData.anomalies.note_client.anomalies_count : 0})</span>
                         <Table locale={{ emptyText: 'Aucune anomalie' }} pagination={false} dataSource={ratings_anomalies} columns={anomaly_columns} className="overflow-hidden pb-1 bg-white border-2 border-gray-200 rounded-lg" />
                     </div>
                     <div className="flex flex-col justify-center my-2 gap-4 mb-14">
-                        <span className="text-sky-900 text-md font-bold">Anomalies relatives aux quantités en stocks</span>
+                        <span className="text-sky-900 text-md font-bold">Anomalies relatives aux quantités en stocks ({fileData ? fileData.anomalies.quantite.anomalies_count : 0})</span>
                         <Table locale={{ emptyText: 'Aucune anomalie' }} pagination={false} dataSource={quantity_anomalies} columns={anomaly_columns} className="overflow-hidden pb-1 bg-white border-2 border-gray-200 rounded-lg" />
                     </div>
                 </div>
